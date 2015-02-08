@@ -1,0 +1,3 @@
+PARSER_BEGIN(Parser)
+	public class Parser{}
+PARSER_END(Parser)
