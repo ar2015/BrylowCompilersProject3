@@ -136,8 +136,6 @@ TOKEN :
 | < #DIGIT: ["0"-"9"] >
 }
 
-<DEFAULT>
-SKIP :
-{
-   <~[]> { error("Illegal token"); }
-}
+
+
+
