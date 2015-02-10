@@ -142,26 +142,166 @@ SKIP :
 }
 
 Absyn.Program Program() :
-{ Absyn.ClassDecl cd; 
-  ArrayList<Absyn.ClassDecl> cd1 = new ArrayList<Absyn.ClassDecl>();
-  ArrayList<Absyn.ThreadDecl> td = new ArrayList<Absyn.ThreadDecl>();}
+{ 
+  Absyn.ClassDecl cd; 
+  Absyn.ThreadDecl td;
+  Absyn.MainClassDecl mcd;
+  AbstractList<Absyn.ClassDecl> cds = new AbstractList<Absyn.ClassDecl>();
+  AbstractList<Absyn.ThreadDecl> tds = new AbstractList<Absyn.ThreadDecl>();}
 {
-  cd = ClassDecl()
-	("class" <ID>"{" "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" (VarDecl())* (Stmt())* (cd1 = ClassDecl() | td = ThreadDecl())*) <EOF> {}
-  { return new Absyn.Program(cd,cd1,td); }
+  mcd = MainClassDecl() 
+	(cd = ClassDecl() { cds.add(cd);} | td = ThreadDecl() { tds.add(td);})* <EOF>
+//  cd = ClassDecl()
+//	("class" <ID>"{" "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" (VarDecl())* (Stmt())* (cd1 = ClassDecl() | td = ThreadDecl())*) <EOF> {}
+  { return new Absyn.Program(cds,tds); }
+}
+
+Absyn.ClassDecl MainClassDecl:
+{ 
+  Absyn.VarDecl vd;
+  AbstractList<Absyn.VarDecl> vds = new AbstractList<Absyn.VarDecl>();
+  Absyn.Stmt st;
+  AbstractList<Absyn.Stmt> sts = new AbstractList<Absyn.Stmt>(); 
+}
+
+{
+ "class" <ID> "{" "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" ( vd = VarDecl() {vds.add(vd);} )* ( st = Stmt() {sts.add(st);} )* "}" "}"
+ {return new Absyn.MainClassDecl(vds,sts);
 }
 
 Absyn.ClassDecl ClassDecl:
-{ Absyn.ClassDecl  cd; 
+{ 
   Token name = null; parent = null;
-  Absyn.FieldExpr fe = null;
-  ArrayList<Absyn.FieldExpr> fes = new ArrayList<Absyn.FieldExpr>();
-  Absyn.MethodDecl md = null;
-  ArrayList<Absyn.MethodDecl> mds = new ArrayList<Absyn.MethodDecl>();
-  Absyn VoidDecl vd = null;
-  ArrayList<Absyn.VoidDecl> vds = new ArrayList<Absyn.VoidDecl>();
+  Absyn.FieldExpr fe;
+  AbstractList<Absyn.FieldExpr> fes = new AbstractList<Absyn.FieldExpr>();
+  Absyn.MethodDecl md;
+  AbstractList<Absyn.MethodDecl> mds = new AbstractList<Absyn.MethodDecl>();
+  Absyn VoidDecl vd;
+  AbstractList<Absyn.VoidDecl> vds = new AbstractList<Absyn.VoidDecl>();
 }
 {
   "class" name = <ID> ("extends" <ID>)? "{" ( fe = FieldExpr() { fes.add(fe);} | md = MethodDecl() { mds.add(md);} | vd = VoidDecl() { vds.add(vd);})* "}"
   {return new Absyn.ClassDecl(name,parent,fes,mds,vs);}	
 }
+
+Absyn.ThreadDecl ThreadDecl:
+{
+  Token name = null; parent = null;
+  Absyn.FieldExpr fe;
+  AbstractList<Absyn.FieldExpr> fes = new AbstractList<Absyn.FieldExpr>();
+  Absyn.MethodDecl md;
+  AbstractList<Absyn.MethodDecl> mds = new AbstractList<Absyn.MethodDecl>();
+  Absyn VoidDecl vd;
+  AbstractList<Absyn.VoidDecl> vds = new AbstractList<Absyn.VoidDecl>();
+ }
+{
+  "class" <ID> "extends" "Thread" "{" ( fe = FieldExpr() { fes.add(fe);} | md = MethodDecl() { mds.add(md);} | vd = VoidDecl() { vds.add(vd);})* "}"
+  {return new Absyn.ThreadDecl(fes,mds,vds);}
+}
+
+Absyn.VarDecl VarDecl:
+{
+  Token name = null;
+  Absyn.Type type;
+  Absyn.Expr expr;
+}
+{
+  type = Type() name = <ID> ("=" expr = Expr() ";" {return new VarDecl(name,type,expr);}
+			| ";"               	   {return new VarDecl(name,type,expr);} )             
+}
+
+Absyn.MethodDecl MethodDecl:
+{
+  Token name = null;
+  Absyn.Type mtype;
+  Absyn.Type arg;
+  AbstractList<Absyn.Type> args = new AbstractList<Absyn.Type>;
+  Absyn.VarDecl vd;
+  AbstractList<Absyn.VarDecl> vds = new AbstractList<Absyn.VarDecl>();
+  Absyn.Expr returnexp;
+  Absyn.Stmt st;
+  AbstractList<Absyn.Stmt> sts = new AbstractList<Absyn.Stmt>();
+}
+{
+  "public" mtype = Type() name =  <ID> "(" ( "synchronized" )? ( vd = VarDecl() { vds.add(vd); } ( "," vd = VarDecl() {vds.add(vd);} )* )? ")" "{" (vd = VarDecl() {vds.add(vd);} )* (st = Stmt() {sts.add(st);} )* "return" returnexp = Expr() ";" "}"
+  { return new MethodDecl(name,mtype,args,sts,vds,returnexp);} 
+}
+
+Absyn.VoidDecl VoidDecl:
+{
+  Token name = null;
+  Absyn.VarDecl vd;
+  AbstractList<Absyn.VarDecl> vds = new AbstractList<Absyn.VarDecl>();
+  Absyn.Stmt st;
+  AbstractList<Absyn.Stmt> sts = new AbstractList<Absyn.Stmt>();
+}
+{
+  "public" "void" name = <ID> "(" ")" "{" ( vd = VarDecl() { vds.add(vd); } )* (st = Stmt() {sts.add(st);} )* "}"
+  { return new VoidDecl(name,vds,sts); } 
+}
+
+Absyn.FieldDecl FieldDecl:
+{
+  Absyn.Type type;
+  Token name = null;
+}
+{
+   type = Type() name = <ID> ";"
+   { return new FieldDecl(type,name); } 
+}
+
+Absyn.Type Type() :
+{
+ Absyn.Type t;
+}
+{
+   (LOOKAHEAD(ArrayType())      t = ArrayType()   |
+    LOOKAHEAD(BooleanType())    t = BooleanType() |
+    LOOKAHEAD(IntegerType())    t = IntegerType() |
+    LOOKAHEAD(IdentifierType()) t = IdentifierType() )
+{
+        return t;
+}
+}
+
+Absyn.Type ArrayType():
+{ Absyn.Type t; }
+{
+  t = Type()
+  { return new Absyn.ArrayType(t); }
+}
+
+Absyn.Type BooleanType() :
+{}
+{
+  { return new Absyn.BooleanType(); }
+}
+
+Absyn.Type IntegerType() :
+{}
+{
+  { return new Absyn.IntegerType(); }
+}
+
+Absyn.Type IdentifierType() :
+{ Token t; }
+{
+        t = <ID>
+        { return new Absyn.IdentifierType(t.image); }
+}
+
+Absyn.Stmt Stmt() :
+{
+        Absyn.Stmt s;
+}
+{
+   (
+    s = AssignStmt() |
+    s = BlockStmt() |
+    s = IfStmt() |
+    s = XinuCallStmt() |
+    s = WhileStmt()
+   )
+   { return s; }
+}
+

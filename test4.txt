@@ -1,0 +1,18 @@
+class test {
+	public static void main (String[] args){
+		int b = 5;
+		int c = 6;
+		if (b <  c)
+			Xinu.print("b < c");
+		else
+			Xinu.print("b >= c");
+	}
+}
+	class cat extends Thread{
+		int r;
+	
+ 	public void chase ()
+	{
+		return 4;
+ 	}
+}
