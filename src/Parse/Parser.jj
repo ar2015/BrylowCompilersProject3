@@ -141,9 +141,27 @@ SKIP :
    <~[]> { error("Illegal token"); }
 }
 
-Absyn.Goal Goal() :
-{ Absyn.Exp e; }
+Absyn.Program Program() :
+{ Absyn.ClassDecl cd; 
+  ArrayList<Absyn.ClassDecl> cd1 = new ArrayList<Absyn.ClassDecl>();
+  ArrayList<Absyn.ThreadDecl> td = new ArrayList<Absyn.ThreadDecl>();}
 {
-  e = Expr() <EOF>   { return new Absyn.Goal(e); }
+  cd = ClassDecl()
+	("class" <ID>"{" "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" (VarDecl())* (Stmt())* (cd1 = ClassDecl() | td = ThreadDecl())*) <EOF> {}
+  { return new Absyn.Program(cd,cd1,td); }
 }
 
+Absyn.ClassDecl ClassDecl:
+{ Absyn.ClassDecl  cd; 
+  Token name = null; parent = null;
+  Absyn.FieldExpr fe = null;
+  ArrayList<Absyn.FieldExpr> fes = new ArrayList<Absyn.FieldExpr>();
+  Absyn.MethodDecl md = null;
+  ArrayList<Absyn.MethodDecl> mds = new ArrayList<Absyn.MethodDecl>();
+  Absyn VoidDecl vd = null;
+  ArrayList<Absyn.VoidDecl> vds = new ArrayList<Absyn.VoidDecl>();
+}
+{
+  "class" name = <ID> ("extends" <ID>)? "{" ( fe = FieldExpr() { fes.add(fe);} | md = MethodDecl() { mds.add(md);} | vd = VoidDecl() { vds.add(vd);})* "}"
+  {return new Absyn.ClassDecl(name,parent,fes,mds,vs);}	
+}
