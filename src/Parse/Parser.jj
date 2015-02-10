@@ -1,5 +1,4 @@
 PARSER_BEGIN(Parser)
-	import java.util.LinkedList;
 	public class Parser{}
 PARSER_END(Parser)
 
@@ -141,3 +140,10 @@ SKIP :
 {
    <~[]> { error("Illegal token"); }
 }
+
+Absyn.Goal Goal() :
+{ Absyn.Exp e; }
+{
+  e = Expr() <EOF>   { return new Absyn.Goal(e); }
+}
+

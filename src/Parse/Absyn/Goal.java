@@ -1,13 +1,14 @@
 package Absyn;
 
-public class Goal {
+public class Goal
+{
+  public ClassDecl cd;
+  public Goal(ClassDecl cd) {   this.cd = cd;   }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
+  public String toString()
+  {
+    if (null != cd) return cd.toString();
+    else           return null;
+  }
 
 }
