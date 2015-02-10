@@ -17,22 +17,7 @@ public class Main {
 	        System.out.println(p.toString());
 	        System.exit(-1);
 	      }
-//
-//	    // Print Visitor
-//	    System.out.println("Input String:");
-//	    Visit.PrintVisitor pv = new Visit.PrintVisitor();
-//	    pv.visit(g);
-//	    System.out.println();
-//	    System.out.println();
-//
-//	    System.out.println("Abstract Syntax Tree:");
-//	    Visit.AbsynPrintVisitor apv = new Visit.AbsynPrintVisitor();
-//	    apv.visit(g);
-//	    System.out.println();
-//	    System.out.println();
-//
-//	    System.out.println("Interpreter:");
-//	    Visit.Interpreter interp = new Visit.Interpreter();
-//	    System.out.println(interp.visit(g));
+	    
+	    System.out.println(g);
 	  }
 }
