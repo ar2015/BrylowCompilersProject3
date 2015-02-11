@@ -156,7 +156,7 @@ Absyn.Program Program() :
   { return new Absyn.Program(cds,tds); }
 }
 
-Absyn.ClassDecl MainClassDecl():
+void MainClassDecl():
 { 
   Absyn.VarDecl vd;
   AbstractList<Absyn.VarDecl> vds = new AbstractList<Absyn.VarDecl>();
@@ -169,34 +169,32 @@ Absyn.ClassDecl MainClassDecl():
  {return new Absyn.MainClassDecl(vds,sts);
 }
 
-Absyn.ClassDecl ClassDecl():
+void ClassDecl(AbstractList<Absyn.ClassDecl> cl):
 { 
   Token name = null; parent = null;
-  Absyn.FieldExpr fe;
-  AbstractList<Absyn.FieldExpr> fes = new AbstractList<Absyn.FieldExpr>();
-  Absyn.MethodDecl md;
-  AbstractList<Absyn.MethodDecl> mds = new AbstractList<Absyn.MethodDecl>();
-  Absyn VoidDecl vd;
-  AbstractList<Absyn.VoidDecl> vds = new AbstractList<Absyn.VoidDecl>();
+  LinkedList<Absyn.VarDecl> vds = new LinkedList<Absyn.VarDecl>();
+  LinkedList<Absyn.MethodDecl> mds = new LinkedList<Absyn.MethodDecl>();
+//  Absyn VoidDecl vd;
+//  AbstractList<Absyn.VoidDecl> vds = new AbstractList<Absyn.VoidDecl>();
 }
 {
-  "class" name = <ID> ("extends" <ID>)? "{" ( fe = FieldExpr() { fes.add(fe);} | md = MethodDecl() { mds.add(md);} | vd = VoidDecl() { vds.add(vd);})* "}"
-  {return new Absyn.ClassDecl(name,parent,fes,mds,vs);}	
+  "class" name = <ID> ("extends" parent = <ID>)? "{" ( (VarDecl(vds)) | MethodDecl(mds))* "}"
+  cl.add(new Absyn.ClassDecl(name.toString(),parent.toString(),fes,mds));	
 }
 
-Absyn.ThreadDecl ThreadDecl():
+void ThreadDecl(LinkedList<Absyn.ClassDecl> cl):
 {
   Token name = null; parent = null;
-  Absyn.FieldExpr fe;
-  AbstractList<Absyn.FieldExpr> fes = new AbstractList<Absyn.FieldExpr>();
-  Absyn.MethodDecl md;
+//  Absyn.VarDecl vad;
+  AbstractList<Absyn.VarDecl> vads = new AbstractList<Absyn.VarDecl>();
+ // Absyn.MethodDecl md;
   AbstractList<Absyn.MethodDecl> mds = new AbstractList<Absyn.MethodDecl>();
-  Absyn VoidDecl vd;
-  AbstractList<Absyn.VoidDecl> vds = new AbstractList<Absyn.VoidDecl>();
+ // Absyn VoidDecl vd;
+ // AbstractList<Absyn.VoidDecl> vds = new AbstractList<Absyn.VoidDecl>();
  }
 {
-  "class" <ID> "extends" "Thread" "{" ( fe = FieldExpr() { fes.add(fe);} | md = MethodDecl() { mds.add(md);} | vd = VoidDecl() { vds.add(vd);})* "}"
-  {return new Absyn.ThreadDecl(fes,mds,vds);}
+  "class" name = <ID> "extends" "Thread" "{" ( VarDecl(vads) | MethodDecl(mds) | VoidDecl(mds)* "}"
+  {cl.add(new Absyn.ThreadDecl(name.toString(),vads,mds));}
 }
 
 Absyn.VarDecl VarDecl():
@@ -210,21 +208,32 @@ Absyn.VarDecl VarDecl():
 			| ";"               	   {return new VarDecl(name,type,expr);} )             
 }
 
-Absyn.MethodDecl MethodDecl():
+void MethodDecl(LinkedList<Absyn.MethodDecl> ml) :
 {
-  Token name = null;
-  Absyn.Type mtype;
-  Absyn.Type arg;
-  AbstractList<Absyn.Type> args = new AbstractList<Absyn.Type>;
-  Absyn.VarDecl vd;
-  AbstractList<Absyn.VarDecl> vds = new AbstractList<Absyn.VarDecl>();
-  Absyn.Expr returnexp;
-  Absyn.Stmt st;
-  AbstractList<Absyn.Stmt> sts = new AbstractList<Absyn.Stmt>();
+        Absyn.Type type = null;
+        Token name;
+        Absyn.Formal  param = null;
+        Absyn.Stmt    stmt  = null;
+        Absyn.Expr    expr  = null;
+        boolean sync = false;
+        LinkedList<Absyn.Formal> params   = new LinkedList<Absyn.Formal>();
+        LinkedList<Absyn.VarDecl> locals  = new LinkedList<Absyn.VarDecl>();
+        LinkedList<Absyn.Stmt> stmts      = new LinkedList<Absyn.Stmt>();
 }
 {
-  "public" mtype = Type() name =  <ID> "(" ( "synchronized" )? ( vd = VarDecl() { vds.add(vd); } ( "," vd = VarDecl() {vds.add(vd);} )* )? ")" "{" (vd = VarDecl() {vds.add(vd);} )* (st = Stmt() {sts.add(st);} )* "return" returnexp = Expr() ";" "}"
-  { return new MethodDecl(name,mtype,args,sts,vds,returnexp);} 
+        ("public_static_void" | type = Type())
+         [ "synchronized" { sync = true; } ]
+         name = <ID>
+             "AbstractList" "(" ( param = Formal() { params.add(param); } )*
+             ")"
+             "AbstractList" "(" ( VarDecl(locals) )*
+             ")"
+             "AbstractList" "(" ( stmt  = Stmt() { stmts.add(stmt); } )*
+             ")"
+             expr = Expr()
+        ")"
+                { ml.add(new Absyn.MethodDecl(type, sync, name.toString(),
+                                            params, locals, stmts, expr)); }
 }
 
 Absyn.VoidDecl VoidDecl():
@@ -238,6 +247,17 @@ Absyn.VoidDecl VoidDecl():
 {
   "public" "void" name = <ID> "(" ")" "{" ( vd = VarDecl() { vds.add(vd); } )* (st = Stmt() {sts.add(st);} )* "}"
   { return new VoidDecl(name,vds,sts); } 
+}
+
+//Formal(Type type, String name)
+Absyn.Formal Formal() :
+{
+        Absyn.Type type;
+        Token name;
+}
+{
+        type = Type() name = <ID>
+        { return new Absyn.Formal(type, name.image); }
 }
 
 Absyn.FieldDecl FieldDecl():
