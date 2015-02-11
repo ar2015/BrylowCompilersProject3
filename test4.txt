@@ -11,8 +11,7 @@ class test {
 	class cat extends Thread{
 		int r;
 	
- 	public void chase ()
-	{
+ 	public int chase (int nmice, int ncheese){
 		return 4;
- 	}
+	}
 }
