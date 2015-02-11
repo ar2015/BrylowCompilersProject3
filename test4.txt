@@ -8,10 +8,13 @@ class test {
 			Xinu.print("b >= c");
 	}
 }
-	class cat extends Thread{
+	class cat {
 		int r;
 	
- 	public int chase (int nmice, int ncheese){
-		return 4;
-	}
+// 	public int chase (int nmice, int ncheese){
+//		return 4;
+//	}
+}
+class mice {
+	
 }

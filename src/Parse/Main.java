@@ -2,11 +2,11 @@
 public class Main {
 	 public static void main(String[] args)
 	  {
-	    Absyn.Goal g = null;
+	    Absyn.Program p = null;
 	    try
 	      {
 	        java.io.FileReader reader = new java.io.FileReader(args[0]);
-	        g = new Parser(reader).Goal();
+	        p = new Parser(reader).Program();
 	      }
 	    catch (java.io.IOException e)
 	      {

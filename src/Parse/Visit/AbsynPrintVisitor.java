@@ -48,32 +48,33 @@ public class AbsynPrintVisitor implements Visitor
   public void visit(Absyn.Expr e)    {  }
  
 
-  private void printBinOp(Absyn.Exp left, Absyn.Exp right)
-  {
-    out.println("(");
-    indent += 2;    printIndent();
-    out.println("left(");
-    indent += 2;    printIndent();
-
-    left.accept(this);
-
-    out.println("),");
-    indent -= 2;    printIndent();
-    out.println("right(");
-    indent += 2;    printIndent();
-
-    right.accept(this);
-
-    out.print("))");
-    indent -= 4;
-  }
+//  private void printBinOp(Absyn.Exp left, Absyn.Exp right)
+//  {
+//    out.println("(");
+//    indent += 2;    printIndent();
+//    out.println("left(");
+//    indent += 2;    printIndent();
+//
+//    left.accept(this);
+//
+//    out.println("),");
+//    indent -= 2;    printIndent();
+//    out.println("right(");
+//    indent += 2;    printIndent();
+//
+//    right.accept(this);
+//
+//    out.print("))");
+//    indent -= 4;
+//  }
 
   public void visit(Absyn.AddExpr e)
   {
     out.print("AddExpr(");
     indent += 2;    printIndent();
     
-    printBinOp(e.left, e.right);
+    e.e1.accept(this);
+    e.e2.accept(this);
     
     indent -= 2;    printIndent();
     out.print(")");
@@ -81,10 +82,11 @@ public class AbsynPrintVisitor implements Visitor
   
   public void visit(Absyn.SubExpr e)
   {
-    out.print("AddExpr(");
+    out.print("SubExpr(");
     indent += 2;    printIndent();
     
-    printBinOp(e.left, e.right);
+    e.e1.accept(this);
+    e.e2.accept(this);
     
     indent -= 2;    printIndent();
     out.print(")");
@@ -92,10 +94,11 @@ public class AbsynPrintVisitor implements Visitor
   
   public void visit(Absyn.MulExpr e)
   {
-    out.print("AddExpr(");
+    out.print("MulExpr(");
     indent += 2;    printIndent();
     
-    printBinOp(e.left, e.right);
+    e.e1.accept(this);
+    e.e2.accept(this);
     
     indent -= 2;    printIndent();
     out.print(")");
@@ -103,10 +106,11 @@ public class AbsynPrintVisitor implements Visitor
   
   public void visit(Absyn.DivExpr e)
   {
-    out.print("AddExpr(");
+    out.print("DivExpr(");
     indent += 2;    printIndent();
     
-    printBinOp(e.left, e.right);
+    e.e1.accept(this);
+    e.e2.accept(this);
     
     indent -= 2;    printIndent();
     out.print(")");
@@ -115,7 +119,7 @@ public class AbsynPrintVisitor implements Visitor
   
   public void visit(Absyn.IntegerLiteral e)
   {
-    out.print("IntegerLiteral(" + e.num + ")");
+    out.print("IntegerLiteral(" + e.value + ")");
   }
 
   public void visit(Absyn.IdentifierExpr e)
@@ -123,19 +127,33 @@ public class AbsynPrintVisitor implements Visitor
     out.print("IdentifierExpr(" + e.id + ")");
   }
   
-  public void visit(Absyn.Absyn e)    
-  {  
+ // public void visit(Absyn.Absyn e)    
+  //{  
 	  
-  }
+  //}
   
   public void visit(Absyn.AndExpr e)
   {
-    
+	  out.print("AndExpr(");
+	    indent += 2;    printIndent();
+	    
+	    e.e1.accept(this);
+	    e.e2.accept(this);
+	    
+	    indent -= 2;    printIndent();
+	    out.print(")");
   }
   
   public void visit(Absyn.ArrayExpr e)
   {
-    
+	  out.print("ArrayExpr(");
+	    indent += 2;    printIndent();
+	    
+	    e.target.accept(this);
+	    e.index.accept(this);
+	    
+	    indent -= 2;    printIndent();
+	    out.print(")");
   }
   public void visit(Absyn.ArrayType e)
   {
