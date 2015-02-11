@@ -18,6 +18,19 @@ TOKEN :
 {
   < "(" >
 | < ")" >
+| < "!" >
+| < "*" >
+| < "," >
+| < "-" >
+| < "." >
+| < "/" >
+| < ";" >
+| < "<" >
+| < "=" >
+| < ">" >
+| < "[" >
+| < "]" >
+| < "{" >
 | < "Absyn" >
 | < "AddExpr" >
 | < "AndExpr" >
@@ -27,25 +40,34 @@ TOKEN :
 | < "AssignStmt" >
 | < "BinOpExpr" >
 | < "BlockStmt" >
+| < "boolean" >
 | < "BooleanType" >
 | < "CallExpr" >
+| < "class" >
 | < "ClassDecl" >
 | < "DivExpr" >
+| < "else" >
 | < "EqualExpr" >
 | < "Expr" >
+| < "extends" >
+| < "false" >
 | < "FalseExpr" >
 | < "FieldExpr" >
 | < "Formal" >
 | < "GreaterExpr" >
 | < "IdentifierExpr" >
 | < "IdentifierType" >
+| < "if" >
 | < "IfStmt" >
+| < "int" >
 | < "IntegerLiteral" >
 | < "IntegerType" >
 | < "LesserExpr" >
+| < "main" >
 | < "MethodDecl" >
 | < "MulExpr" >
 | < "NegExpr" >
+| < "new" >
 | < "NewArrayExpr" >
 | < "NewObjectExpr" >
 | < "NotEqExpr" >
@@ -53,16 +75,25 @@ TOKEN :
 | < "NullExpr" >
 | < "OrExpr" >
 | < "Program" >
+| < "public" >
+| < "return" >
+| < "static" >
 | < "Stmt" >
+| < "String" >
 | < "StringLiteral" >
 | < "SubExpr" >
+| < "this" >
 | < "ThisExpr" >
 | < "ThreadDecl" >
+| < "true" >
 | < "TrueExpr" >
 | < "Type" >
 | < "VarDecl" >
+| < "void" >
 | < "VoidDecl" >
+| < "while" >
 | < "WhileStmt" >
+| < "Xinu" >
 | < "XinuCallExpr" >
 | < "XinuCallStmt" >
 | < "public_static_void" >
@@ -271,20 +302,29 @@ Absyn.Type Type() :
  Absyn.Type t;
 }
 {
-   (LOOKAHEAD(ArrayType())      t = ArrayType()   |
-    LOOKAHEAD(BooleanType())    t = BooleanType() |
+   (LOOKAHEAD(BooleanType())    t = BooleanType() |
     LOOKAHEAD(IntegerType())    t = IntegerType() |
     LOOKAHEAD(IdentifierType()) t = IdentifierType() )
+	t = Tprime(t)
 {
         return t;
 }
 }
 
-Absyn.Type ArrayType():
-{ Absyn.Type t; }
+Absyn.Type Tprime(Absyn.Type t) :
+{ }
 {
-  t = Type() ("[""]")*
-  { return new Absyn.ArrayType(t); }
+  (t = ArrayType(t)
+  |{} )
+  { return t; }
+}
+  
+
+Absyn.Type ArrayType(Absyn.Type t):
+{ }
+{
+  ("[""]")* 
+{ return new Absyn.ArrayType(t); }
 }
 
 Absyn.Type BooleanType() :
@@ -392,8 +432,7 @@ Absyn.Expr Expr() :
 }
 {
         (
-        | e = FalseExpr()
- //       | e = FieldExpr()
+          e = FalseExpr()
         | e = IdentifierExpr()
         | e = NegExpr()
         | e = NotExpr()
@@ -408,29 +447,31 @@ Absyn.Expr Expr() :
         { return e; }
 }
 
-Absyn.Expr Eprime(Absyn.Expr passed){
+Absyn.Expr Eprime(Absyn.Expr passed):
+{
 	Absyn.Expr = e;
 	Token id = null;
 	Absyn.Expr exp;
-	ArrayList<Absyn.Expr> exps = new ArrayList<Absyn.Expr>;
+	ArrayList<Absyn.Expr> exps = new ArrayList<Absyn.Expr>();
 }
 {
-	({}	{return passed;}
-//	|"." id = <ID> "(" ( exp = Expr(){ exps.add(exp); } (","  exp = Expr(){ exps.add(exp); })*)?")" {return CallExp(passed,id,exps);}
-	|e = CallExp(passed)
-	|e = OrExp(passed)
-	|e = AndExp(passed)
+	({}	{e = passed;}
+	|e = CallExpr(passed)        
+	|e = AndExpr(passed)
+	|e = OrExpr(passed)
 	|e = EqualExpr(passed)
 	|e = GreaterExpr(passed)
 	|e = LesserExpr(passed)
-	|e = AddExpr(passed)
-	|e = SubExpr(passed)
 	|e = MulExpr(passed)
 	|e = DivExpr(passed)
+	|e = AddExpr(passed)		//{return new AddExpr(passed, e);} 
+	|e = SubExpr(passed)
 	|e = ArrayExpr(passed)
 	|e = NewObjectExpr(passed)
 	|e = NewArrayExpr(passed)
-	|e = NotEqExpr(passed))
+	|e = NotEqExpr(passed)
+	|e = FieldExpr(passed))
+	//e = Eprime(passed)
 	{ return e; }
 }
 
@@ -440,7 +481,7 @@ Absyn.AddExpr AddExpr(Absyn.Expr passed) :
 }
 {
         "+" e = Expr()
-        { return new Absyn.AddExpr(passed, e); }
+        { return new AddExpr(passed, e); }
 }
 
 Absyn.AndExpr AndExpr(Absyn.Expr passed) :
@@ -449,7 +490,7 @@ Absyn.AndExpr AndExpr(Absyn.Expr passed) :
 }
 {
         "&&" e = Expr()
-        { return new Absyn.AndExpr(passed, e); }
+        { return new AndExpr(passed, e); }
 }
 
 //DivExpr(Expr e1, Expr e2)
@@ -505,7 +546,7 @@ Absyn.MulExpr MulExpr(Absyn.Expr passed) :
 //NotEqExpr(Expr e1, Expr e2)
 Absyn.NotEqExpr NotEqExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e
+        Absyn.Expr e;
 }
 {
         "!=" e = Expr()
@@ -565,14 +606,13 @@ Absyn.FalseExpr FalseExpr() :
 }
 
 //FieldExpr(Expr target, String field)
-Absyn.FieldExpr FieldExpr() :
+Absyn.FieldExpr FieldExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr target;
         Token field;
 }
 {
-        target = Expr()"." field = <ID>
-        { return new Absyn.FieldExpr(target, field.image); }
+        "." field = <ID>
+        { return new Absyn.FieldExpr(passed, field.image); }
 }
 
 //IdentifierExpr(String id)
