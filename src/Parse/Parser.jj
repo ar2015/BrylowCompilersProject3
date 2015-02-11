@@ -392,18 +392,9 @@ Absyn.Expr Expr() :
 }
 {
         (
-//        e = AddExpr()
-//        | e = AndExpr()
-//        | e = ArrayExpr()
-//        | e = CallExpr()
-//        | e = DivExpr()
-//        | e = EqualExpr()
         | e = FalseExpr()
  //       | e = FieldExpr()
- //       | e = GreaterExpr()
- //       | e = IdentifierExpr()
- //       | e = LesserExpr()
- //       | e = MulExpr()
+        | e = IdentifierExpr()
         | e = NegExpr()
         | e = NotExpr()
         | e = NullExpr()
@@ -439,16 +430,17 @@ Absyn.Expr Eprime(Absyn.Expr passed){
 	|e = ArrayExpr(passed)
 	|e = NewObjectExpr(passed)
 	|e = NewArrayExpr(passed)
-	|e = NotEqExpr(passed)
+	|e = NotEqExpr(passed))
+	{ return e; }
 }
 
-Absyn.AddExpr AddExpr() :
+Absyn.AddExpr AddExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e;
 }
 {
-        e1 = Expr() "+" e2 = Expr()
-        { return new Absyn.AddExpr(e1, e2); }
+        "+" e = Expr()
+        { return new Absyn.AddExpr(passed, e); }
 }
 
 Absyn.AndExpr AndExpr(Absyn.Expr passed) :
@@ -461,107 +453,106 @@ Absyn.AndExpr AndExpr(Absyn.Expr passed) :
 }
 
 //DivExpr(Expr e1, Expr e2)
-Absyn.DivExpr DivExpr() :
+Absyn.DivExpr DivExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e;
 }
 {
-        e1 = Expr()"/" e2 = Expr()
-        { return new Absyn.DivExpr(e1, e2); }
+        "/" e = Expr()
+        { return new Absyn.DivExpr(passed, e); }
 }
 
 //EqualExpr(Expr e1, Expr e2)
-Absyn.EqualExpr EqualExpr() :
+Absyn.EqualExpr EqualExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e;
 }
 {
-        e1 = Expr() "==" e2 = Expr()
-        { return new Absyn.EqualExpr(e1, e2); }
+        "==" e = Expr()
+        { return new Absyn.EqualExpr(passed, e); }
 }
 
 //GreaterExpr(Expr e1, Expr e2)
-Absyn.GreaterExpr GreaterExpr() :
+Absyn.GreaterExpr GreaterExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e;
 }
 {
-        e1 = Expr()">" e2 = Expr()
-        { return new Absyn.GreaterExpr(e1, e2); }
+        ">" e = Expr()
+        { return new Absyn.GreaterExpr(passed, e); }
 }
 
 //LesserExpr(Expr e1, Expr e2)
-Absyn.LesserExpr LesserExpr() :
+Absyn.LesserExpr LesserExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e;
 }
 {
-        e1 = Expr()"<" e2 = Expr()
-        { return new Absyn.LesserExpr(e1, e2); }
+        "<" e2 = Expr()
+        { return new Absyn.LesserExpr(passed, e); }
 }
 
 //MulExpr(Expr e1, Expr e2)
-Absyn.MulExpr MulExpr() :
+Absyn.MulExpr MulExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e;
 }
 {
-        e1 = Expr() "*" e2 = Expr()
-        { return new Absyn.MulExpr(e1, e2); }
+        "*" e = Expr()
+        { return new Absyn.MulExpr(passed, e); }
 }
 
 //NotEqExpr(Expr e1, Expr e2)
-Absyn.NotEqExpr NotEqExpr() :
+Absyn.NotEqExpr NotEqExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e
 }
 {
-        e1 = Expr() "!=" e2 = Expr()
-        { return new Absyn.NotEqExpr(e1, e2); }
+        "!=" e = Expr()
+        { return new Absyn.NotEqExpr(passed, e); }
 }
 
 //OrExpr(Expr e1, Expr e2)
-Absyn.OrExpr OrExpr() :
+Absyn.OrExpr OrExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e;
 }
 {
-        e1 = Expr() "||" e2 = Expr()
-        { return new Absyn.OrExpr(e1, e2); }
+        "||" e = Expr()
+        { return new Absyn.OrExpr(passed, e); }
 }
 
 //SubExpr(Expr e1, Expr e2)
-Absyn.SubExpr SubExpr() :
+Absyn.SubExpr SubExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr e1, e2;
+        Absyn.Expr e;
 }
 {
-        e1 = Expr() "-" e2 = Expr()
-        { return new Absyn.SubExpr(e1, e2); }
+        "-" e2 = Expr()
+        { return new Absyn.SubExpr(passed, e); }
 }
 
 //ArrayExpr(Expr target, Expr index)
-Absyn.ArrayExpr ArrayExpr() :
+Absyn.ArrayExpr ArrayExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr target, index;
+        Absyn.Expr index;
 }
 {
-        target = Expr() "[" index = Expr() "]"
-        { return new Absyn.ArrayExpr(target, index); }
+        "[" index = Expr() "]"
+        { return new Absyn.ArrayExpr(passed, index); }
 }
 
 //CallExpr(Expr target, String method, LinkedList<Expr> args)
-Absyn.CallExpr CallExpr() :
+Absyn.CallExpr CallExpr(Absyn.Expr passed) :
 {
-        Absyn.Expr target;
         Token method;
         Absyn.Expr arg;
         LinkedList<Absyn.Expr> args = new LinkedList<Absyn.Expr>();
 }
 {
-        target = Expr() "."  method = <ID>
+        "."  method = <ID>
                        "(" ( arg = Expr() {args.add(arg); } ( arg = Expr() {args.add(arg); } )*)? ")"
-        { return new Absyn.CallExpr(target, method.image, args); }
+        { return new Absyn.CallExpr(passed, method.image, args); }
 }
 
 //FalseExpr()
