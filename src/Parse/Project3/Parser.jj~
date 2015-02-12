@@ -1,0 +1,141 @@
+PARSER_BEGIN(Parser)
+	import java.util.LinkedList;
+	public class Parser{}
+PARSER_END(Parser)
+
+// LexSpec starts here
+
+//white space
+
+{
+  " " | "\t" | "\n" | "\r" | "\f"
+}
+
+//reserved words
+
+TOKEN :
+{
+  < "(" >
+| < ")" >
+| < "Absyn" >
+| < "AddExpr" >
+| < "AndExpr" >
+| < "ArrayExpr" >
+| < "ArrayType" >
+| < "AssignableExpr" >
+| < "AssignStmt" >
+| < "BinOpExpr" >
+| < "BlockStmt" >
+| < "BooleanType" >
+| < "CallExpr" >
+| < "ClassDecl" >
+| < "DivExpr" >
+| < "EqualExpr" >
+| < "Expr" >
+| < "FalseExpr" >
+| < "FieldExpr" >
+| < "Formal" >
+| < "GreaterExpr" >
+| < "IdentifierExpr" >
+| < "IdentifierType" >
+| < "IfStmt" >
+| < "IntegerLiteral" >
+| < "IntegerType" >
+| < "LesserExpr" >
+| < "MethodDecl" >
+| < "MulExpr" >
+| < "NegExpr" >
+| < "NewArrayExpr" >
+| < "NewObjectExpr" >
+| < "NotEqExpr" >
+| < "NotExpr" >
+| < "NullExpr" >
+| < "OrExpr" >
+| < "Program" >
+| < "Stmt" >
+| < "StringLiteral" >
+| < "SubExpr" >
+| < "ThisExpr" >
+| < "ThreadDecl" >
+| < "TrueExpr" >
+| < "TrueExpr" >
+| < "Type" >
+| < "VarDecl" >
+| < "VoidDecl" >
+| < "WhileStmt" >
+| < "XinuCallExpr" >
+| < "XinuCallStmt" >
+| < "public_static_void" >
+| < "Thread" >
+| < "synchronized" >
+| < "AbstractList" >
+| < "null" >
+}
+
+//comments
+
+MORE :
+{
+  "//" : IN_SINGLE_LINE_COMMENT
+| <"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT
+| "/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN :
+{
+  <FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_SINGLE_LINE_COMMENT,IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+//literals
+
+TOKEN :
+{
+  < INT: ( ["1"-"9"] (["0"-"9"])* | "0" )  >
+| < OCT: ( "0"["0"-"7"] (["0"-"7"])* ) >
+| < HEX: ( "0x"(["0"-"9"]|["A"-"F"]|["a"-"f"]) (["0"-"9"]|["A"-"F"]|["a"-"f"])*) >
+
+| < STRING:
+ "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+}
+
+//identifiers
+
+TOKEN :
+{
+  < ID: <LETTER> (<LETTER>|<DIGIT>)* >
+| < #LETTER: ["A"-"Z","a"-"z","_","$"] >
+| < #DIGIT: ["0"-"9"] >
+}
+
+
+
+
