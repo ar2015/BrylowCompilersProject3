@@ -9,25 +9,25 @@ public interface ParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int SINGLE_LINE_COMMENT = 94;
+  int SINGLE_LINE_COMMENT = 96;
   /** RegularExpression Id. */
-  int FORMAL_COMMENT = 95;
+  int FORMAL_COMMENT = 97;
   /** RegularExpression Id. */
-  int MULTI_LINE_COMMENT = 96;
+  int MULTI_LINE_COMMENT = 98;
   /** RegularExpression Id. */
-  int INT = 98;
+  int INT = 100;
   /** RegularExpression Id. */
-  int OCT = 99;
+  int OCT = 101;
   /** RegularExpression Id. */
-  int HEX = 100;
+  int HEX = 102;
   /** RegularExpression Id. */
-  int STRING = 101;
+  int STRING = 103;
   /** RegularExpression Id. */
-  int ID = 102;
+  int ID = 104;
   /** RegularExpression Id. */
-  int LETTER = 103;
+  int LETTER = 105;
   /** RegularExpression Id. */
-  int DIGIT = 104;
+  int DIGIT = 106;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -53,6 +53,7 @@ public interface ParserConstants {
     "\",\"",
     "\"-\"",
     "\".\"",
+    "\"+\"",
     "\"/\"",
     "\";\"",
     "\"<\"",
@@ -61,6 +62,7 @@ public interface ParserConstants {
     "\"[\"",
     "\"]\"",
     "\"{\"",
+    "\"}\"",
     "\"Absyn\"",
     "\"AddExpr\"",
     "\"AndExpr\"",
@@ -132,12 +134,12 @@ public interface ParserConstants {
     "\"AbstractList\"",
     "\"null\"",
     "\"//\"",
-    "<token of kind 92>",
+    "<token of kind 94>",
     "\"/*\"",
     "<SINGLE_LINE_COMMENT>",
     "\"*/\"",
     "\"*/\"",
-    "<token of kind 97>",
+    "<token of kind 99>",
     "<INT>",
     "<OCT>",
     "<HEX>",
@@ -145,9 +147,7 @@ public interface ParserConstants {
     "<ID>",
     "<LETTER>",
     "<DIGIT>",
-    "<token of kind 105>",
-    "\"}\"",
-    "\"+\"",
+    "<token of kind 107>",
     "\"&&\"",
     "\"==\"",
     "\"!=\"",
