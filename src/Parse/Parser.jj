@@ -430,7 +430,7 @@ Absyn.Stmt WhileStmt() :
         "(" test = Expr() ")"
         body = Stmt()
 
-        { return new Absyn.WhileStmt(test, body); }
+        { return new Absyn.rnings.WhileStmt(test, body); }
 }
 
 Absyn.Expr Expr() :
