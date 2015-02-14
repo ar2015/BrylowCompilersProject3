@@ -1,4 +1,4 @@
-package Project3; 
+package Parse; 
 
 public class Main {
 	 public static void main(String[] args)
@@ -13,9 +13,9 @@ public class Main {
 	      {
 	        System.err.println(e.toString());
 	      }
-	    catch (ParseException p)
+	    catch (ParseException pe)
 	      {
-	        System.out.println(p.toString());
+	        System.out.println(pe.toString());
 	        System.exit(-1);
 	      }
 	    

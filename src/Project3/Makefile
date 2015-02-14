@@ -12,29 +12,34 @@ JAVACCGEN = Parse/SimpleCharStream.java Parse/ParseException.java \
         Parse/$(PARSER)TokenManager.java Parse/Token.java \
         Parse/TokenMgrError.java
 
-ABSYN    = Absyn/Absyn.java Absyn/AddExpr.java \
-	Absyn/AndExpr.java Absyn/ArrayType.java \
-	Absyn/AssignableExpr.java Absyn/AssignStmt.java \
-	Absyn/BinOpExpr.java Absyn/BlockStmt.java \
-	Absyn/BooleanType.java Absyn/CallExpr.java \
-	Absyn/ClassDecl.java Absyn/DivExpr.java \
-	Absyn/EqualExpr.java Absyn/Expr.java \
-	Absyn/FalseExpr.java Absyn/FieldExpr.java \
-	Absyn/Formal.java Absyn/GreaterExpr.java \
-	Absyn/IdentifierExpr.java Absyn/IdentifierType.java \
-        Absyn/LesserExpr.java Absyn/MethodDecl.java \
-	Absyn/NewArrayExpr.java Absyn/NewObjectExpr.java \
-        Absyn/NotEqExpr.java Absyn/NotExpr.java \
-	Absyn/NullExpr.java Absyn/Stmt.java \
-        Absyn/StringLiteral.java Absyn/ThisExpr.java \
-	Absyn/ThreadDecl.java Absyn/TrueExpr.java \
-        Absyn/VarDecl.java Absyn/VoidDecl.java \
-	Absyn/WhileStmt.java Absyn/XinuCallExpr.java \
-        Absyn/XinuCallStmt.java Absyn/AssignStmt.java 
+ABSYN    = Parse/Absyn/Absyn.java Parse/Absyn/AddExpr.java \
+	Parse/Absyn/AndExpr.java Parse/Absyn/ArrayType.java \
+	Parse/Absyn/AssignableExpr.java Parse/Absyn/AssignStmt.java \
+	Parse/Absyn/BinOpExpr.java Parse/Absyn/BlockStmt.java \
+	Parse/Absyn/BooleanType.java Parse/Absyn/CallExpr.java \
+	Parse/Absyn/ClassDecl.java Parse/Absyn/DivExpr.java \
+	Parse/Absyn/EqualExpr.java Parse/Absyn/Expr.java \
+	Parse/Absyn/FalseExpr.java Parse/Absyn/FieldExpr.java \
+	Parse/Absyn/Formal.java Parse/Absyn/GreaterExpr.java \
+	Parse/Absyn/IdentifierExpr.java Parse/Absyn/IdentifierType.java \
+        Parse/Absyn/LesserExpr.java Parse/Absyn/MethodDecl.java \
+	Parse/Absyn/NewArrayExpr.java Parse/Absyn/NewObjectExpr.java \
+        Parse/Absyn/NotEqExpr.java Parse/Absyn/NotExpr.java \
+	Parse/Absyn/NullExpr.java Parse/Absyn/Stmt.java \
+       Parse/Absyn/StringLiteral.java Parse/Absyn/ThisExpr.java \
+	Parse/Absyn/ThreadDecl.java Parse/Absyn/TrueExpr.java \
+        Parse/Absyn/VarDecl.java Parse/Absyn/VoidDecl.java \
+	Parse/Absyn/WhileStmt.java Parse/Absyn/XinuCallExpr.java \
+        Parse/Absyn/XinuCallStmt.java Parse/Absyn/AssignStmt.java \
+	Parse/Absyn/ArrayExpr.java Parse/Absyn/IfStmt.java\
+	Parse/Absyn/IntegerLiteral.java Parse/Absyn/MulExpr.java\
+	Parse/Absyn/IntegerType.java Parse/Absyn/NegExpr.java\
+	Parse/Absyn/OrExpr.java Parse/Absyn/Program.java\
+	Parse/Absyn/SubExpr.java Parse/Absyn/Type.java
         
 
-VISIT    = Visit/Visitable.java Visit/Visitor.java \
-         Visit/AbsynPrintVisitor.java 
+VISIT    = Parse/Visit/Visitable.java Parse/Visit/Visitor.java \
+         Parse/Visit/AbsynPrintVisitor.java 
         
        
 
@@ -47,7 +52,7 @@ all:  $(SRCS:.java=.class)
 
 
 
-$(PARSER).java: $(PARSER).jj
+$(PARSER).java: Parse/$(PARSER).jj
 	$(JAVACC) $(JAVACC_FLAGS) $<
 
 parser: $(PARSER).class $(PARSER)Constants.class \

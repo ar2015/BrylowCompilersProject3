@@ -50,7 +50,6 @@ public interface Visitor
   
   public void visit(Absyn.NullExpr e);
   public void visit(Absyn.OrExpr e);
-  public void visit(Absyn.PrintVisitor e);
   
   public void visit(Absyn.Program e);
   public void visit(Absyn.Stmt e);
